@@ -27,15 +27,38 @@ var getSchedule = function()
 var formatSchedule = function()
 {
     var schedule = getSchedule();
-    var pretty = '';
+    var pretty = [];
 
 	for(var i = 0; i < schedule.length; ++i)
 	{
 		var uglyDate = schedule[i].datetime;
 	    var niceDate = months[parseInt(uglyDate.substr(5, 2), 10) - 1];
 		niceDate = niceDate + ` ${uglyDate.charAt(8) == '0' ? uglyDate.substr(9, 1) : uglyDate.substr(8, 2)}`;
-		console.log(niceDate);
+		niceDate = niceDate + `, ${uglyDate.substr(0,4)}`;
+		var hour = parseInt(uglyDate.substr(11, 2)) - 1;
+		var pm = false;
+		if(hour > 12)
+		{
+		    pm = true;
+			hour -= 12;
+		}
+		if(hour == 0)
+		    hour = 12;
+
+		var niceTime = '' + hour;
+		niceTime = niceTime + `:${uglyDate.substr(14, 5)}`;
+		niceTime = niceTime + (pm ? ' PM' : ' AM');
+		
+		var entry = {
+		    title: schedule[i].episodeTitle,
+		    date: niceDate,
+			time: niceTime
+		}
+		pretty.push(entry);
 	}
+
+	console.log(pretty);
+	return pretty;
 
 }
 formatSchedule();
